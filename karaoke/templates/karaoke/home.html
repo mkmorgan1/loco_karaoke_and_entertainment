@@ -1,0 +1,151 @@
+{% extends 'karaoke/base.html' %}
+{% load static %}
+
+{% block title %}Welcome - Loco Karaoke & Entertainment{% endblock %}
+
+{% block content %}
+<!-- Welcome Section -->
+<div class="welcome-section">
+               <div class="mb-4">
+               <img src="{% static 'logo.png' %}" alt="Loco Karaoke Logo" height="120" class="mb-3">
+           </div>
+    <h1 class="display-4 fw-bold mb-3">
+        Welcome to Loco Karaoke & Entertainment!
+    </h1>
+    <p class="lead mb-0">Your premier destination for unforgettable entertainment experiences</p>
+    <p class="mb-0">Join us for amazing karaoke nights, live music, comedy shows, and so much more!</p>
+</div>
+
+<!-- Featured Events Section -->
+{% if featured_events %}
+<div class="calendar-section">
+    <h2 class="mb-4">
+        <i class="fas fa-star text-warning me-2"></i>
+        Featured Events
+    </h2>
+    <div class="row">
+        {% for event in featured_events %}
+        <div class="col-lg-6 col-md-6 mb-4">
+            <div class="card event-card featured-event h-100">
+                <div class="card-body">
+                    <span class="badge" style="background-color: var(--gold-color); color: var(--dark-color);" class="event-type-badge">
+                        <i class="fas fa-star"></i> Featured
+                    </span>
+                    <h5 class="card-title" style="color: var(--primary-color);">{{ event.title }}</h5>
+                    <p class="card-text text-muted">{{ event.description|truncatewords:20 }}</p>
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <small class="text-muted">Date</small>
+                            <div class="fw-bold">{{ event.date|date:"M d, Y" }}</div>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted">Time</small>
+                            <div class="fw-bold">{{ event.start_time|time:"g:i A" }} - {{ event.end_time|time:"g:i A" }}</div>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <span class="badge" style="background-color: var(--accent-color); color: var(--cream-color);">{{ event.get_event_type_display }}</span>
+                        <span class="badge" style="background-color: var(--secondary-color); color: var(--cream-color);">{{ event.location }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Upcoming Events Calendar -->
+<div class="calendar-section">
+    <h2 class="mb-4">
+        <i class="fas fa-calendar-alt text-primary me-2"></i>
+        Upcoming Events
+    </h2>
+    
+    {% if upcoming_events %}
+    <div class="row">
+        {% for event in upcoming_events %}
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card event-card h-100">
+                <div class="card-body">
+                                    <span class="badge" style="background-color: var(--accent-color); color: var(--cream-color);" class="event-type-badge">
+                    {{ event.get_event_type_display }}
+                </span>
+                <h5 class="card-title" style="color: var(--primary-color);">{{ event.title }}</h5>
+                    <p class="card-text">{{ event.description|truncatewords:15 }}</p>
+                    
+                    <div class="row text-center mb-3">
+                        <div class="col-6">
+                            <small class="text-muted">Date</small>
+                            <div class="fw-bold">{{ event.date|date:"M d" }}</div>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted">Time</small>
+                            <div class="fw-bold">{{ event.start_time|time:"g:i A" }}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge" style="background-color: var(--secondary-color); color: var(--cream-color);">{{ event.location }}</span>
+                        {% if event.capacity %}
+                        <small style="color: var(--dark-color);">
+                            <i class="fas fa-users me-1"></i>
+                            Capacity: {{ event.capacity }}
+                        </small>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    {% if user.is_authenticated and user.is_superuser %}
+    <div class="text-center mt-4">
+        <a href="/admin/karaoke/event/" class="btn" style="background-color: var(--accent-color); border-color: var(--accent-color); color: var(--cream-color);">
+            <i class="fas fa-plus me-2"></i>
+            Add New Event
+        </a>
+    </div>
+    {% endif %}
+    
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+        <h4 class="text-muted">No upcoming events scheduled</h4>
+        <p class="text-muted">Check back soon for exciting events!</p>
+        {% if user.is_authenticated and user.is_superuser %}
+        <a href="/admin/karaoke/event/" class="btn" style="background-color: var(--accent-color); border-color: var(--accent-color); color: var(--cream-color);">
+            <i class="fas fa-plus me-2"></i>
+            Add First Event
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<!-- Quick Info Section -->
+<div class="row mt-5">
+    <div class="col-md-4 text-center mb-4">
+        <div class="p-4 rounded" style="background-color: var(--light-color); border: 2px solid var(--secondary-color);">
+            <i class="fas fa-microphone fa-2x mb-3" style="color: var(--primary-color);"></i>
+            <h5 style="color: var(--primary-color);">Karaoke Nights</h5>
+            <p style="color: var(--dark-color);">Sing your heart out with our professional karaoke system</p>
+        </div>
+    </div>
+    <div class="col-md-4 text-center mb-4">
+        <div class="p-4 rounded" style="background-color: var(--light-color); border: 2px solid var(--secondary-color);">
+            <i class="fas fa-music fa-2x mb-3" style="color: var(--accent-color);"></i>
+            <h5 style="color: var(--primary-color);">Live Music</h5>
+            <p style="color: var(--dark-color);">Enjoy amazing live performances from talented artists</p>
+        </div>
+    </div>
+    <div class="col-md-4 text-center mb-4">
+        <div class="p-4 rounded" style="background-color: var(--light-color); border: 2px solid var(--secondary-color);">
+            <i class="fas fa-laugh fa-2x mb-3" style="color: var(--gold-color);"></i>
+            <h5 style="color: var(--primary-color);">Comedy Shows</h5>
+            <p style="color: var(--dark-color);">Laugh the night away with our comedy events</p>
+        </div>
+    </div>
+</div>
+{% endblock %} 
